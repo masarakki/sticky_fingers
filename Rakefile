@@ -2,6 +2,8 @@
 
 require 'rubygems'
 require 'bundler'
+
+gem_name = 'sticky_fingers'
 begin
   Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
@@ -14,11 +16,11 @@ require 'rake'
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "sticky_fingers"
-  gem.homepage = "http://github.com/masarakki/sticky_fingers"
+  gem.name = gem_name
+  gem.homepage = "http://github.com/masarakki/#{gem_name}"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{zip}
+  gem.description = %Q{zip}
   gem.email = "masaki@hisme.net"
   gem.authors = ["masarakki"]
   # dependencies defined in Gemfile
@@ -46,4 +48,12 @@ Rake::RDocTask.new do |rdoc|
   rdoc.title = "sticky_fingers #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
+end
+
+if RUBY_PLATFORM =~ /java/
+  require 'rake/javaextensiontask'
+  Rake::JavaExtensionTask.new gem_name
+else
+  require 'rake/extensiontask'
+  Rake::ExtensionTask.new gem_name
 end
