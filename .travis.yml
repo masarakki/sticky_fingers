@@ -1,0 +1,6 @@
+before_script:
+  - sudo apt-get install libzip-dev
+  - rake compile
+rvm:
+  - 2.0.0
+  - 1.9.3
