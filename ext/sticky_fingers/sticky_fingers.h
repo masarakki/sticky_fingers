@@ -3,4 +3,8 @@
 
 #include "ruby.h"
 void Init_sticky_fingers();
+
+struct sticky_fingers {
+
+};
 #endif
