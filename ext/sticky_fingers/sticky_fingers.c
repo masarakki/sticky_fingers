@@ -7,13 +7,14 @@ static VALUE sticky_fingers_alloc(VALUE klass);
 static void sticky_fingers_mark(struct sticky_fingers *p);
 static void sticky_fingers_free(struct sticky_fingers *p);
 static VALUE sticky_fingers_s_open_file(int args, VALUE *argv, VALUE self);
-
+static VALUE sticky_fingers_list_files(VALUE self);
 static void sticky_fingers_raise_error_on_open(int error_no);
 
 void Init_sticky_fingers() {
     StickyFingers = rb_define_class("StickyFingers", rb_cObject);
     rb_define_alloc_func(StickyFingers, sticky_fingers_alloc);
     rb_define_singleton_method(StickyFingers, "open_file", sticky_fingers_s_open_file, -1);
+    rb_define_method(StickyFingers, "list_files", sticky_fingers_list_files, 0);
 }
 
 static VALUE sticky_fingers_alloc(VALUE klass) {
@@ -54,6 +55,24 @@ static VALUE sticky_fingers_s_open_file(int argc, VALUE * argv, VALUE self) {
     return instance;
 }
 
+static VALUE sticky_fingers_list_files(VALUE self) {
+    struct sticky_fingers *inner;
+    VALUE files;
+    int num_files;
+    int file_index;
+    char *filename;
+    Data_Get_Struct(self, struct sticky_fingers, inner);
+
+    files = rb_ary_new();
+    num_files = zip_get_num_files(inner->zip);
+
+    for (file_index = 0; file_index < num_files; file_index++) {
+        filename = zip_get_name(inner->zip, file_index, 0);
+        rb_ary_push(files, rb_str_new2(filename));
+    }
+
+    return files;
+}
 
 static void sticky_fingers_raise_error_on_open(int error_no) {
     // TODO: raise errors
