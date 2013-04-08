@@ -5,6 +5,6 @@
 void Init_sticky_fingers();
 
 struct sticky_fingers {
-
+    struct zip *zip;
 };
 #endif
