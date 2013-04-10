@@ -8,12 +8,6 @@ describe StickyFingers, "C-extension" do
     describe :open_file do
       it { StickyFingers.open_file(sample_zip).should be_a StickyFingers }
     end
-
-    describe :open do
-      it "run block with StickyFingers instance" do
-        StickyFingers.open(sample_zip) {|f| f.should be_a StickyFingers }
-      end
-    end
   end
 
   describe :instance_methods do

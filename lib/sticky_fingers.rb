@@ -8,7 +8,11 @@ class StickyFingers
 
   def self.open(filename, &block)
     sticky_fingers = StickyFingers.open_file(filename)
-    block.call(sticky_fingers)
+    if block_given?
+      sticky_fingers.instance_eval &block
+    else
+      sticky_fingers
+    end
   end
 
   def ls

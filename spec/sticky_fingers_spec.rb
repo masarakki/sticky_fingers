@@ -7,8 +7,9 @@ describe StickyFingers do
   describe :class_methods do
     describe :open do
       it "run block with StickyFingers instance" do
-        StickyFingers.open(sample_zip) {|f| f.should be_a StickyFingers }
+        StickyFingers.open(sample_zip) { self }.should be_a StickyFingers
       end
+      it { StickyFingers.open(sample_zip).should be_a StickyFingers }
     end
   end
 
