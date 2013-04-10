@@ -22,6 +22,5 @@ describe StickyFingers, "C-extension" do
     describe :list_files do
       it { subject.list_files.map { |x| NKF.nkf('-w', x) }.sort.should == ['dir1/', 'dir1/test1.txt', 'dir1/subdir/', 'dir1/subdir/test1.txt', 'dir2/', 'dir2/test1.txt', 'test1.txt', 'テスト.txt'].sort }
     end
-
   end
 end
