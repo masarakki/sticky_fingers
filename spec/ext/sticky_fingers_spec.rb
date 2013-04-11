@@ -22,4 +22,12 @@ describe StickyFingers, "C-extension" do
     before { @sticky_fingers = StickyFingers.open_file(sample_file('sjis.zip')) }
     its(:ls) { @sticky_fingers.ls.map(&:name).should == ['えすじす/'] }
   end
+
+  describe :bad_file do
+    it 'raise error' do
+      lambda {
+        StickyFingers.open_file(sample_file('src/test1.txt'))
+      }.should raise_error(StickyFingers::Error, "Error: Not a zip archive")
+    end
+  end
 end

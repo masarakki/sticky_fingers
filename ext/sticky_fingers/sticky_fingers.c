@@ -1,20 +1,26 @@
 #include <zip.h>
+#include <errno.h>
+#include "ruby.h"
 #include "sticky_fingers.h"
+#include "sticky_fingers_error.h"
 
 VALUE StickyFingers;
+extern VALUE StickyFingers_Error;
 
 static VALUE sticky_fingers_alloc(VALUE klass);
 static void sticky_fingers_mark(struct sticky_fingers *p);
 static void sticky_fingers_free(struct sticky_fingers *p);
 static VALUE sticky_fingers_s_open_file(int args, VALUE *argv, VALUE self);
 static VALUE sticky_fingers_list_files(VALUE self);
-static void sticky_fingers_raise_error_on_open(int error_no);
+static void sticky_fingers_raise_error(int zip_errno, int global_errno);
 
 void Init_sticky_fingers() {
     StickyFingers = rb_define_class("StickyFingers", rb_cObject);
     rb_define_alloc_func(StickyFingers, sticky_fingers_alloc);
     rb_define_singleton_method(StickyFingers, "open_file", sticky_fingers_s_open_file, -1);
     rb_define_method(StickyFingers, "list_files", sticky_fingers_list_files, 0);
+
+    Init_sticky_fingers_error();
 }
 
 static VALUE sticky_fingers_alloc(VALUE klass) {
@@ -28,9 +34,10 @@ static void sticky_fingers_mark(struct sticky_fingers *p) {
 static void sticky_fingers_free(struct sticky_fingers *p) {
     int close_result;
     if (p->zip) {
+        errno = 0;
         close_result = zip_close(p->zip);
         if (close_result) {
-            // TODO: handle error
+            sticky_fingers_raise_error(close_result, errno);
         }
     }
     xfree(p);
@@ -39,17 +46,17 @@ static void sticky_fingers_free(struct sticky_fingers *p) {
 static VALUE sticky_fingers_s_open_file(int argc, VALUE * argv, VALUE self) {
     VALUE filename;
     VALUE instance;
-    int error_no;
+    int zip_errno = 0;
     struct sticky_fingers *inner;
     rb_scan_args(argc, argv, "1", &filename);
     Check_Type(filename, T_STRING);
 
     instance = rb_funcall(StickyFingers, rb_intern("new"), 0);
     Data_Get_Struct(instance, struct sticky_fingers, inner);
-    inner->zip = zip_open(RSTRING_PTR(filename), 0, &error_no);
-
-    if (error_no) {
-        sticky_fingers_raise_error_on_open(error_no);
+    errno = 0;
+    inner->zip = zip_open(RSTRING_PTR(filename), 0, &zip_errno);
+    if (zip_errno) {
+        sticky_fingers_raise_error(zip_errno, errno);
     }
 
     return instance;
@@ -74,33 +81,12 @@ static VALUE sticky_fingers_list_files(VALUE self) {
     return files;
 }
 
-static void sticky_fingers_raise_error_on_open(int error_no) {
-    // TODO: raise errors
-    switch (error_no) {
-    case ZIP_ER_EXISTS:
-        // The file specified by path exists and ZIP_EXCL is set.
-        break;
-    case ZIP_ER_INCONS:
-        // Inconsistencies were found in the file specified by path and ZIP_CHECKCONS was specified.
-        break;
-    case ZIP_ER_INVAL:
-        // The path argument is NULL.
-        break;
-    case ZIP_ER_MEMORY:
-        // Required memory could not be allocated.
-        break;
-    case ZIP_ER_NOENT:
-        // The file specified by path does not exist and ZIP_CREATE is not set.
-        break;
-    case ZIP_ER_NOZIP:
-        // The file specified by path is not a zip archive.
-        break;
-    case ZIP_ER_OPEN:
-        // The file specified by path could not be opened.
-        break;
-    case ZIP_ER_READ:
-        // A read error occurred; see for details.
-    case ZIP_ER_SEEK:
-        break;
-    }
+static void sticky_fingers_raise_error(int zip_errno, int global_errno) {
+    int size = 512;
+    char *buffer;
+
+    buffer = (char *) malloc(sizeof(char) * size);
+    zip_error_to_str(buffer, size, zip_errno, global_errno);
+
+    rb_raise(StickyFingers_Error, "Error: %s", buffer);
 }

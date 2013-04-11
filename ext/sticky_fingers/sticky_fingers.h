@@ -1,10 +1,12 @@
-#ifndef __STICKY_FINGERS_GEM__
-#define __STICKY_FINGERS_GEM__
+#ifndef __STICKY_FINGERS_H__
+#define __STICKY_FINGERS_H__
 
-#include "ruby.h"
+#include <zip.h>
+
 void Init_sticky_fingers();
 
 struct sticky_fingers {
     struct zip *zip;
 };
+
 #endif
