@@ -33,6 +33,7 @@ class StickyFingers
       basename = directories.pop
 
       directories.each do |dirname|
+        target["#{dirname}/"] = StickyFingers::Dir.new(self, "#{dirname}/") unless target["#{dirname}/"]
         target = target["#{dirname}/"]
       end
 
