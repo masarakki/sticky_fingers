@@ -9,6 +9,10 @@ Spork.prefork do
 
   Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
+  def sample_file(filename)
+    File.expand_path "sample/#{filename}", File.dirname(__FILE__)
+  end
+
   RSpec.configure do |config|
 
   end
