@@ -35,7 +35,7 @@ static void sticky_fingers_mark(struct sticky_fingers *p) {
 }
 
 static void sticky_fingers_free(struct sticky_fingers *p) {
-    int close_result;
+    int close_result = 0;
     if (p->zip) {
         errno = 0;
         close_result = zip_close(p->zip);
@@ -85,11 +85,7 @@ static VALUE sticky_fingers_list_files(VALUE self) {
 }
 
 static void sticky_fingers_raise_error(int zip_errno, int global_errno) {
-    int size = 512;
-    char *buffer;
-
-    buffer = (char *) malloc(sizeof(char) * size);
-    zip_error_to_str(buffer, size, zip_errno, global_errno);
-
+    char buffer[ST_BUFSIZE];
+    zip_error_to_str(buffer, ST_BUFSIZE, zip_errno, global_errno);
     rb_raise(StickyFingers_Error, "Error: %s", buffer);
 }
