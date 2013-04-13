@@ -2,9 +2,8 @@ require 'sticky_fingers.so'
 require 'nkf'
 
 class StickyFingers
-  autoload :FileBase, 'sticky_fingers/file_base'
-  autoload :Dir, 'sticky_fingers/dir'
-  autoload :File, 'sticky_fingers/file'
+  require 'sticky_fingers/file'
+  require 'sticky_fingers/dir'
 
   def self.open(filename, &block)
     sticky_fingers = StickyFingers.open_file(filename)

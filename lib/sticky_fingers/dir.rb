@@ -1,4 +1,4 @@
-class StickyFingers::Dir < StickyFingers::FileBase
+class StickyFingers::Dir < StickyFingers::File
   def has?(file)
     files.has_key?(file)
   end
@@ -19,9 +19,8 @@ class StickyFingers::Dir < StickyFingers::FileBase
     files.values
   end
 
-  def dir?
-    true
-  end
+  def file? ; false ; end
+  def dir?  ; true  ; end
 
   private
   def files

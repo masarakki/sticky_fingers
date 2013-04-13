@@ -3,9 +3,11 @@
 #include "ruby.h"
 #include "sticky_fingers.h"
 #include "sticky_fingers_error.h"
+#include "sticky_fingers_file.h"
 
 VALUE StickyFingers;
 extern VALUE StickyFingers_Error;
+extern VALUE StickyFingers_File;
 
 static VALUE sticky_fingers_alloc(VALUE klass);
 static void sticky_fingers_mark(struct sticky_fingers *p);
@@ -21,6 +23,7 @@ void Init_sticky_fingers() {
     rb_define_method(StickyFingers, "list_files", sticky_fingers_list_files, 0);
 
     Init_sticky_fingers_error();
+    Init_sticky_fingers_file();
 }
 
 static VALUE sticky_fingers_alloc(VALUE klass) {
