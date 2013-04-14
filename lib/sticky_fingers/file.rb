@@ -13,17 +13,14 @@ class StickyFingers::File
                    open
                    content = read
                    close
+                   guess = NKF.guess(content)
+                   content = content.encode(Encoding::UTF_8, guess) unless guess == Encoding::ASCII_8BIT
                    content
                  end
   end
 
-  def encoded_content
-    NKF.nkf('-w', content)
-  end
-
   def cp(filename, binmode = false)
     File.open(filename, "w") do |f|
-      content = binmode ? conent : encoded_content
       f.write content
     end
   end

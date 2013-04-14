@@ -13,7 +13,7 @@ describe StickyFingers, "C-extension" do
     subject { @sticky_fingers }
     before { @sticky_fingers = StickyFingers.open_file(sample_file('sample.zip')) }
     describe :list_files do
-      it { subject.list_files.map { |x| NKF.nkf('-w', x) }.sort.should == ['dir1/', 'dir1/test1.txt', 'dir1/subdir/', 'dir1/subdir/test1.txt', 'dir2/', 'dir2/test1.txt', 'test1.txt', 'テスト.txt', 'ruby.png'].sort }
+      it { subject.list_files.map { |x| NKF.nkf('-w', x) }.sort.should == ['dir1/', 'dir1/test1.txt', 'dir1/subdir/', 'dir1/subdir/test1.txt', 'dir2/', 'dir2/test1.txt', 'test1.txt', 'テスト.txt', 'ruby.png', 'utf8.txt', 'sjis.txt'].sort }
     end
   end
 
