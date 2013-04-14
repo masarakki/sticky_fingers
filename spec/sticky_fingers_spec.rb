@@ -15,12 +15,12 @@ describe StickyFingers do
   describe :instance_methods do
     subject { @sticky_fingers }
     before { @sticky_fingers = StickyFingers.open_file(sample_file('sample.zip')) }
-    its(:ls) { subject.ls.map(&:name).should == %w{dir1/ dir2/ test1.txt テスト.txt} }
+    its(:ls) { subject.ls.map(&:name).sort.should == %w{dir1/ dir2/ test1.txt テスト.txt ruby.png}.sort }
 
     describe :generate_file_mappings do
       it 'create mapping from file_list' do
         mappings = subject.send(:generate_file_mappings)
-        mappings.keys.map{|x| NKF.nkf('-w', x) }.sort.should == %w{dir1/ dir2/ test1.txt テスト.txt}.sort
+        mappings.keys.map{|x| NKF.nkf('-w', x) }.sort.should == %w{dir1/ dir2/ test1.txt テスト.txt ruby.png}.sort
         mappings["dir1/"].keys.sort.should == %w{test1.txt subdir/}.sort
       end
     end
