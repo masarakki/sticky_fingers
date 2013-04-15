@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+require 'sticky_fingers'
+require 'slop'
+
+opts = Slop.parse(help: true, ignore_case: true, optional_arguments: true) do
+  on :dry_run, 'dry run'
+  on :quiet, 'quiet mode'
+end
+
+filename = ARGV.shift
+dest = File.expand_path ARGV.pop || '.'
+
+StickyFingers.unzip(filename, dest)

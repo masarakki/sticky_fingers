@@ -1,5 +1,6 @@
 require 'sticky_fingers.so'
 require 'nkf'
+require 'fileutils'
 
 class StickyFingers
   require 'sticky_fingers/file'
@@ -14,8 +15,27 @@ class StickyFingers
     end
   end
 
+  def self.unzip(filename, basepath, options = {})
+    open(filename).unzip(basepath, options)
+  end
+
   def ls
     root.values
+  end
+
+  def unzip(basepath = nil, options = {})
+    basepath ||= './'
+    list_files.sort.each do |filename|
+      unless filename =~ /\/$/
+        file = StickyFingers::File.new(self, filename)
+        fullpath = ::File.join basepath, file.name
+        dirname = ::File.dirname(fullpath)
+        basename = ::File.basename(fullpath)
+        ::FileUtils.mkdir_p(dirname)
+        puts "unzip #{file.name} to #{fullpath}" unless options[:quiet] == true
+        file.cp fullpath unless options[:dry] == true
+      end
+    end
   end
 
   private

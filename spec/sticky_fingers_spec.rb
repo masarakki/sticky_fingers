@@ -24,5 +24,14 @@ describe StickyFingers do
         mappings["dir1/"].keys.sort.should == %w{test1.txt subdir/}.sort
       end
     end
+
+    describe :unzip do
+      it 'unzip' do
+        subject.unzip sample_file('unzip'), quiet: true
+        File.exists?(sample_file('unzip')).should be_true
+        File.read(sample_file('unzip/sjis.txt')).should == "てすと\n"
+        FileUtils.rm_r sample_file('unzip')
+      end
+    end
   end
 end

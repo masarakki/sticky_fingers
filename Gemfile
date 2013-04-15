@@ -13,6 +13,7 @@ group :development, :test do
   gem "guard-rake"
   gem "pry"
   gem "pry-doc"
+  gem 'slop'
 
   gem "rb-inotify", :require => false
   gem "rb-fsevent", :require => false
