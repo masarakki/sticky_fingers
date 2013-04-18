@@ -17,6 +17,23 @@ describe StickyFingers do
     before { @sticky_fingers = StickyFingers.open_file(sample_file('sample.zip')) }
     its(:ls) { subject.ls.map(&:name).sort.should == %w{dir1/ dir2/ test1.txt テスト.txt ruby.png sjis.txt utf8.txt}.sort }
 
+    describe :cd do
+      context :block_given?, true do
+        it "into directory" do
+          files = @sticky_fingers.cd('dir1') do
+            cd "subdir" do
+              ls
+            end
+          end
+          files.map(&:name).should == ['dir1/subdir/test1.txt']
+        end
+      end
+
+      context :block_given?, false do
+        it { true.should be_true }
+      end
+    end
+
     describe :generate_file_mappings do
       it 'create mapping from file_list' do
         mappings = subject.send(:generate_file_mappings)

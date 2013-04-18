@@ -20,7 +20,11 @@ class StickyFingers
   end
 
   def ls
-    root.values
+    root.ls
+  end
+
+  def cd(dir, &block)
+    root.cd(dir, &block)
   end
 
   def unzip(basepath = nil, options = {})

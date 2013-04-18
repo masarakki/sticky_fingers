@@ -1,4 +1,14 @@
 class StickyFingers::Dir < StickyFingers::File
+  def ls
+    values
+  end
+
+  def cd(dir, &block)
+    dir += '/' unless dir =~ /\/$/
+    dir = files[dir]
+    dir.instance_eval(&block)
+  end
+
   def has?(file)
     files.has_key?(file)
   end
