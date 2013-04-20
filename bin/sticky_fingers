@@ -4,11 +4,12 @@ require 'sticky_fingers'
 require 'slop'
 
 opts = Slop.parse(help: true, ignore_case: true, optional_arguments: true) do
+  on :d=, 'exdir'
   on :dry_run, 'dry run'
-  on :quiet, 'quiet mode'
+  on :q, 'quiet'
 end
 
 filename = ARGV.shift
-dest = File.expand_path ARGV.pop || '.'
+exdir = exdir || '.'
 
-StickyFingers.unzip(filename, dest)
+StickyFingers.unzip(filename, exdir)

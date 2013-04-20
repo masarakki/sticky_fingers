@@ -36,7 +36,7 @@ class StickyFingers
         dirname = ::File.dirname(fullpath)
         basename = ::File.basename(fullpath)
         ::FileUtils.mkdir_p(dirname)
-        puts "unzip #{file.name} to #{fullpath}" unless options[:quiet] == true
+        puts "inflating: #{fullpath}" unless options[:quiet] == true
         file.cp fullpath unless options[:dry] == true
       end
     end
